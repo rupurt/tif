@@ -45,7 +45,7 @@
       devShells.default = pkgs.mkShell {
         packages = [
           pkgs.bats
-          pkgs.zigpkgs."0.11.0"
+          pkgs.zigpkgs.master
           pkgs.zls
         ];
       };

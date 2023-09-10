@@ -12,7 +12,7 @@ pkgs.stdenvNoCC.mkDerivation {
   inherit pname version;
   src = ./.;
   nativeBuildInputs = [
-    pkgs.zigpkgs."0.11.0"
+    pkgs.zigpkgs.master
   ];
   dontConfigure = true;
   dontInstall = true;

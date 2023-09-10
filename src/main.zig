@@ -1,24 +1,69 @@
 const std = @import("std");
+const clap = @import("clap");
+
+const debug = std.debug;
+const io = std.io;
+const process = std.process;
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    const params = comptime clap.parseParamsComptime(
+        \\-h, --help       Display this help and exit.
+        \\<FILE1>          The base file
+        \\<FILE2>          The file to compare
+        \\
+    );
+    const parsers = comptime .{
+        .FILE1 = clap.parsers.string,
+        .FILE2 = clap.parsers.string,
+    };
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    var diag = clap.Diagnostic{};
+    var res = clap.parse(clap.Help, &params, parsers, .{
+        .diagnostic = &diag,
+    }) catch |err| {
+        diag.report(io.getStdErr().writer(), err) catch {};
+        return err;
+    };
+    defer res.deinit();
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    if (res.args.help != 0) {
+        return clap.help(std.io.getStdErr().writer(), clap.Help, &params, .{});
+    }
+    if (res.positionals.len != 2) {
+        return clap.usage(std.io.getStdErr().writer(), clap.Help, &params);
+    }
 
-    try bw.flush(); // don't forget to flush!
-}
+    // line buffer
+    const line_buffer_size = 1024;
+    std.debug.print("line buffer size: {d}\n", .{line_buffer_size});
 
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
+    // file1
+    const file1_path: []const u8 = res.positionals[0];
+    std.debug.print("file1: {s}\n", .{file1_path});
+
+    var file1 = try std.fs.cwd().openFile(file1_path, .{});
+    defer file1.close();
+
+    var buf_reader1 = std.io.bufferedReader(file1.reader());
+    var in_stream1 = buf_reader1.reader();
+
+    var buf1: [line_buffer_size]u8 = undefined;
+    while (try in_stream1.readUntilDelimiterOrEof(&buf1, '\n')) |line| {
+        std.debug.print("line: {s}\n", .{line});
+    }
+
+    // file1
+    const file2_path: []const u8 = res.positionals[1];
+    std.debug.print("file2: {s}\n", .{file2_path});
+
+    var file2 = try std.fs.cwd().openFile(file2_path, .{});
+    defer file2.close();
+
+    var buf_reader2 = std.io.bufferedReader(file2.reader());
+    var in_stream2 = buf_reader2.reader();
+
+    var buf2: [line_buffer_size]u8 = undefined;
+    while (try in_stream2.readUntilDelimiterOrEof(&buf2, '\n')) |line| {
+        std.debug.print("line: {s}\n", .{line});
+    }
 }
