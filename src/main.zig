@@ -13,6 +13,7 @@ pub fn main() !void {
         \\-r, --readbuffer <READBUFFER>   Number of bytes to use as a buffer. Default: 65536
         \\-c, --colbuffer  <COLBUFFER>    Number of bytes to use as a column buffer. Default: 4096
         \\-m, --maxcolumns <MAXCOLUMNS>   Maximum number of columns in a record. Default: 512
+        \\-v, --verbose    <VERBOSE>      Maximum number of columns in a record. Default: 512
         \\<PATH1>                         The base path
         \\<PATH1>                         The path to compare
         \\
@@ -21,6 +22,7 @@ pub fn main() !void {
         .READBUFFER = clap.parsers.int(u32, 10),
         .COLBUFFER = clap.parsers.int(u32, 10),
         .MAXCOLUMNS = clap.parsers.int(u32, 10),
+        .VERBOSE = clap.parsers.string,
         .PATH1 = clap.parsers.string,
         .PATH2 = clap.parsers.string,
     };

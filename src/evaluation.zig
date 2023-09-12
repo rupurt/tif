@@ -131,20 +131,20 @@ pub const FSPathIndex = struct {
         }
 
         hash.final(hash_out[0..]);
-        const file_stat = try file.stat();
-
-        _ = try io.getStdErr().write(try fmt.allocPrint(
-            allocator,
-            (
-                \\file size bytes: {d}
-                \\inode:           {d}
-                \\ctime:           {d}
-                \\mtime:           {d}
-                \\blake3 hash:     {s}
-                \\
-            ),
-            .{ file_stat.size, file_stat.inode, file_stat.ctime, file_stat.mtime, fmt.fmtSliceHexLower(&hash_out) },
-        ));
+        // const file_stat = try file.stat();
+        //
+        // _ = try io.getStdErr().write(try fmt.allocPrint(
+        //     allocator,
+        //     (
+        //         \\file size bytes: {d}
+        //         \\inode:           {d}
+        //         \\ctime:           {d}
+        //         \\mtime:           {d}
+        //         \\blake3 hash:     {s}
+        //         \\
+        //     ),
+        //     .{ file_stat.size, file_stat.inode, file_stat.ctime, file_stat.mtime, fmt.fmtSliceHexLower(&hash_out) },
+        // ));
 
         // var header = try record_parser.header.to_string(allocator);
         // _ = try io.getStdErr().write(try fmt.allocPrint(
