@@ -11,18 +11,27 @@ tif test/fixtures/people.csv test/fixtures/people_reverse.csv
 
 ```shell
 tif
-[-h] <PATH1> <PATH2>
+[-h] [-r <READBUFFER>] [-c <COLBUFFER>] [-m <MAXCOLUMNS>] <PATH1> <PATH1>
 ```
 
 ```shell
 tif -h
--h, --help
+    -h, --help
             Display this help and exit.
+
+    -r, --readbuffer <READBUFFER>
+            Number of bytes to use as a buffer. Default: 65536
+
+    -c, --colbuffer <COLBUFFER>
+            Number of bytes to use as a column buffer. Default: 4096
+
+    -m, --maxcolumns <MAXCOLUMNS>
+            Maximum number of columns in a record. Default: 512
 
     <PATH1>
             The base path
 
-    <PATH2>
+    <PATH1>
             The path to compare
 ```
 
