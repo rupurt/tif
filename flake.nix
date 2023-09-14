@@ -46,6 +46,8 @@
         packages = [
           pkgs.bats
           pkgs.b3sum
+          pkgs.gprof2dot
+          pkgs.valgrind
           pkgs.zigpkgs.master
           pkgs.zls
         ];
